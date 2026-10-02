@@ -1,0 +1,87 @@
+.settings-band {
+  grid-template-columns: 2fr 1fr 140px 180px;
+}
+.logo-field input {
+  display: none;
+}
+.logo-preview {
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed #555;
+  border-radius: 4px;
+  background: #0a0a0a;
+  color: #888;
+  cursor: pointer;
+  font-size: 9px;
+  text-transform: none;
+}
+.logo-preview img {
+  max-width: 100%;
+  max-height: 34px;
+  object-fit: contain;
+}
+.tournament-logo {
+  position: relative;
+  z-index: 8;
+  width: 145px;
+  height: 196px;
+  justify-self: center;
+  align-self: end;
+  object-fit: cover;
+  object-position: center;
+  filter: drop-shadow(0 4px 10px #000);
+}
+.logo-space {
+  width: 110px;
+  height: 180px;
+}
+.is-hidden .tournament-logo {
+  opacity: 0;
+  transform: translate(-100px, 60px);
+}
+.overlay-hiding .tournament-logo {
+  animation: logo-out 0.4s ease-in both;
+}
+.overlay-showing .tournament-logo {
+  animation: logo-in 0.42s ease-out both;
+}
+@keyframes logo-out {
+  to {
+    opacity: 0;
+    transform: translate(-100px, 60px);
+  }
+}
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: translate(-100px, 60px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+@media (max-width: 1400px) {
+  .tournament-logo {
+    width: 97px;
+    height: 131px;
+  }
+  .logo-space {
+    width: 73px;
+    height: 120px;
+  }
+}
+
+@media (min-width: 2000px) {
+  .tournament-logo {
+    width: 193px;
+    height: 261px;
+  }
+  .logo-space {
+    width: 147px;
+    height: 240px;
+  }
+}

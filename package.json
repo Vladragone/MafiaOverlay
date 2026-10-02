@@ -1,0 +1,15 @@
+{
+  "name": "mafia-tournament-obs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Панель управления и оверлей спортивной мафии для OBS",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "obs-websocket-js": "^5.0.6",
+    "ws": "^8.18.3"
+  }
+}

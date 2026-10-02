@@ -1,0 +1,70 @@
+.person-card .photo img,
+.player-card .photo img {
+  object-fit: cover;
+  object-position: center top;
+}
+.photo img {
+  transform: translate(var(--avatar-x, 0), var(--avatar-y, 0))
+    scale(var(--avatar-scale, 1));
+  transform-origin: center center;
+}
+.frame-editor {
+  padding: 9px 10px;
+  border-top: 1px solid #303030;
+  background: #101010;
+}
+.frame-editor summary {
+  color: #ffdd2d;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  list-style: none;
+}
+.frame-editor summary::-webkit-details-marker {
+  display: none;
+}
+.frame-editor summary:after {
+  content: "+";
+  float: right;
+  color: #777;
+}
+.frame-editor[open] summary:after {
+  content: "−";
+}
+.frame-controls {
+  display: grid;
+  gap: 6px;
+  margin-top: 9px;
+}
+.frame-control {
+  display: grid;
+  grid-template-columns: 54px 1fr 31px;
+  align-items: center;
+  gap: 6px;
+  color: #888;
+  font-size: 8px;
+}
+.frame-control output {
+  text-align: right;
+  color: #ccc;
+}
+.frame-control input[type="range"] {
+  height: 14px;
+  padding: 0;
+  accent-color: #ffdd2d;
+  border: 0;
+  background: transparent;
+}
+.frame-reset {
+  height: 24px;
+  margin-top: 3px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background: #1b1b1b;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}

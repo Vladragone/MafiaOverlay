@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mafia Tournament Control</title>
+    <link rel="stylesheet" href="control.css" />
+    <link rel="stylesheet" href="game-log.css" />
+    <link rel="stylesheet" href="avatar-editor.css" />
+    <link rel="stylesheet" href="logo.css" />
+    <link rel="stylesheet" href="game-controls.css" />
+    <style>
+      .player-card {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">T</span>
+        <div>
+          <strong>Mafia Control</strong
+          ><small id="phaseLabel">Подготовка турнира</small>
+        </div>
+      </div>
+      <nav class="steps">
+        <span data-step="setup">1. Турнир</span><i></i
+        ><span data-step="seating">2. Рассадка</span><i></i
+        ><span data-step="live">3. Игра</span>
+      </nav>
+      <div class="top-actions">
+        <span class="sync"
+          ><i></i><span id="syncLabel">Синхронизация</span></span
+        ><button class="button ghost" id="sceneSettingsButton">Настройка сцен</button
+        ><button class="button ghost" id="obsButton"><b></b>OBS</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view" id="setupView">
+        <div class="page-head">
+          <div>
+            <small>ШАГ 1</small>
+            <h1>Создание турнира</h1>
+            <p>
+              Заполните состав один раз. Фотографии и ники сохранятся для всех
+              игр.
+            </p>
+          </div>
+        </div>
+        <section class="settings-band">
+          <label
+            >Название турнира<input
+              id="eventInput"
+              maxlength="50"
+              placeholder="Например, Кубок Т-Банка"
+          /></label>
+          <label
+            >Этап или стол<input
+              id="tableInput"
+              maxlength="30"
+              placeholder="Финал"
+          /></label>
+          <label
+            >Количество игр<input
+              id="totalInput"
+              type="number"
+              min="1"
+              max="99"
+          /></label>
+          <label class="logo-field"
+            >Логотип турнира<input
+              id="logoInput"
+              type="file"
+              accept="image/png,image/webp,image/svg+xml" /><span
+              id="logoPreview"
+              class="logo-preview"
+            ></span
+          ></label>
+        </section>
+        <div class="section-title integration-title">
+          <div>
+            <small>MAFIA UNLIMIT</small>
+            <h2>Данные для эфирных таблиц</h2>
+          </div>
+          <span>Публичный API, авторизация не требуется</span>
+        </div>
+        <section class="settings-band api-settings">
+          <label
+            >API<input id="apiBaseInput" type="url" placeholder="https://mafiaunlimit.ru/api"
+          /></label>
+          <label
+            >ID турнира<input id="tournamentIdInput" inputmode="numeric" placeholder="Например, 12"
+          /></label>
+          <label
+            >ID текущей игры<input id="gameIdInput" inputmode="numeric" placeholder="Например, 498"
+          /></label>
+          <label
+            >Дата турнира<input id="tournamentDateInput" maxlength="40" placeholder="3 октября 2026"
+          /></label>
+          <label
+            >Начало эфира<input id="streamStartsInput" type="datetime-local"
+          /></label>
+        </section>
+        <div class="section-title">
+          <div>
+            <small>СОСТАВ</small>
+            <h2>12 участников</h2>
+          </div>
+          <span>10 основных + 2 запасных</span>
+        </div>
+        <div class="roster-grid" id="participantsGrid"></div>
+        <div class="section-title judges-title">
+          <div>
+            <small>СУДЕЙСКАЯ КОЛЛЕГИЯ</small>
+            <h2>Судьи</h2>
+          </div>
+          <button class="button ghost" id="addJudge">+ Добавить судью</button>
+        </div>
+        <div class="judges-grid" id="judgesGrid"></div>
+        <div class="footer-actions">
+          <span id="setupError" class="error"></span
+          ><button class="button primary large" id="toSeating">
+            Перейти к рассадке →
+          </button>
+        </div>
+      </section>
+
+      <section class="view hidden" id="seatingView">
+        <div class="page-head">
+          <div>
+            <small>ШАГ 2</small>
+            <h1>Рассадка на игру <span id="seatingGame"></span></h1>
+            <p>Распределите десять игроков по номерам за столом.</p>
+          </div>
+          <div class="page-actions">
+            <button class="button danger-outline" id="restartTournamentSeating">Начать турнир заново</button>
+            <button class="button ghost" id="backToSetup">Редактировать турнир</button>
+          </div>
+        </div>
+        <div class="seating-layout">
+          <section class="table-map">
+            <div class="table-center">
+              <span>ИГРА</span><strong id="tableGameNumber"></strong>
+            </div>
+            <div id="seatMap"></div>
+          </section>
+          <aside class="reserve-panel">
+            <small>ВНЕ СТОЛА</small>
+            <h2>Запасные</h2>
+            <div id="reserveList"></div>
+            <p>Список обновляется автоматически при изменении рассадки.</p>
+          </aside>
+        </div>
+        <div class="footer-actions">
+          <span id="seatingError" class="error"></span
+          ><button class="button primary large" id="startGame">
+            Начать игру
+          </button>
+        </div>
+      </section>
+
+      <section class="view hidden" id="liveView">
+        <div class="live-toolbar">
+          <div>
+            <small id="liveEvent"></small>
+            <h1>Игра <span id="liveGame"></span></h1>
+          </div>
+          <div class="live-actions">
+            <button class="button danger-outline" id="restartTournament">Начать турнир заново</button
+            ><button class="button ghost" id="editSeating">Рассадка</button
+            ><button class="button overlay-toggle" id="overlayToggle">
+              <span>Показать оверлей</span></button
+            ><button class="button primary" id="nextGame">
+              Следующая игра →
+            </button>
+          </div>
+        </div>
+        <div class="live-layout">
+          <aside class="scene-panel">
+            <div class="section-title compact">
+              <div>
+                <small>OBS STUDIO</small>
+                <h2>Сцены</h2>
+              </div>
+              <button class="icon-button" id="refreshScenes" title="Обновить">
+                ↻
+              </button>
+            </div>
+            <div id="sceneList" class="scene-list"></div>
+            <div class="scene-setup">
+              <label
+                >Источник игры<input
+                  id="obsGameSource"
+                  value="Захват экрана" /></label
+              ><label
+                >Источник вебки<input
+                  id="obsCameraSource"
+                  value="Камера ведущего" /></label
+              ><button class="button primary" id="setupScenes">
+                Создать 10 сцен</button
+              ><small
+                >Источники должны уже существовать в OBS с такими
+                именами.</small
+              >
+            </div>
+            <div class="overlay-url">
+              <small>BROWSER SOURCE</small><code id="overlayUrl"></code>
+            </div>
+          </aside>
+          <section class="live-main">
+            <div class="section-title compact">
+              <div>
+                <small>ПРОТОКОЛ ИГРЫ</small>
+                <h2>События стола</h2>
+              </div>
+              <button class="button ghost" id="resetNominations">
+                Сбросить выставления
+              </button>
+            </div>
+            <div id="gameLogControl"></div>
+            <div class="section-title compact players-title">
+              <div>
+                <small>УПРАВЛЕНИЕ ИГРОЙ</small>
+                <h2>Игроки за столом</h2>
+              </div>
+              <span class="counter" id="aliveCounter"></span>
+            </div>
+            <div class="players-grid" id="playersGrid"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="obsDialog">
+      <form id="obsForm">
+        <div class="dialog-head">
+          <div>
+            <small>OBS WEBSOCKET</small>
+            <h2>Подключение к OBS</h2>
+          </div>
+          <button class="icon-button" id="closeObsDialog" type="button">
+            ×
+          </button>
+        </div>
+        <label
+          >Адрес<input
+            name="address"
+            value="ws://127.0.0.1:4455"
+            required /></label
+        ><label
+          >Пароль<input name="password" type="password" autocomplete="off"
+        /></label>
+        <p>В OBS включите сервер WebSocket через меню «Сервис».</p>
+        <div class="dialog-actions">
+          <button class="button ghost" id="cancelObsDialog" type="button">
+            Отмена</button
+          ><button class="button primary" id="connectObs" type="submit">
+            Подключить
+          </button>
+        </div>
+        <span class="error" id="obsError"></span>
+      </form>
+    </dialog>
+    <dialog id="restartTournamentDialog" class="confirm-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div><small>СБРОС ТУРНИРА</small><h2>Начать турнир заново?</h2></div>
+          <button class="icon-button" id="closeRestartTournament" type="button">×</button>
+        </div>
+        <div class="confirm-warning">
+          <strong>Текущий ход турнира будет обнулен.</strong>
+          <p>Очистятся номер текущей игры, роли, статусы игроков, карточки, выставления, лучший ход, ночи и голосования.</p>
+          <p>Состав, фотографии, судьи, название и настройки сцен сохранятся. Данные в Mafia Unlimit не удаляются.</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="button ghost" id="cancelRestartTournament" type="button">Отмена</button>
+          <button class="button danger-solid" id="confirmRestartTournament" type="button">Да, начать заново</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="sceneSettingsDialog" class="scene-settings-dialog">
+      <form method="dialog">
+        <div class="dialog-head">
+          <div><small>ЭФИРНОЕ ОФОРМЛЕНИЕ</small><h2>Настройка сцен</h2></div>
+          <button class="icon-button" id="closeSceneSettings" type="button">×</button>
+        </div>
+        <div class="scene-editor-layout">
+          <nav id="sceneSettingsTabs" class="scene-settings-tabs"></nav>
+          <section class="scene-editor">
+            <div id="sceneSettingsFields"></div>
+            <div class="scene-preview-head"><span>Предпросмотр</span><a id="openScenePreview" target="_blank">Открыть 1920 × 1080</a></div>
+            <iframe id="scenePreview" title="Предпросмотр сцены"></iframe>
+          </section>
+        </div>
+        <div class="dialog-actions scene-dialog-actions">
+          <button class="button ghost" id="resetSceneSettings" type="button">Сбросить эту сцену</button>
+          <button class="button primary" id="saveSceneSettings" type="button">Сохранить настройки</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast"></div>
+    <script type="module" src="control.js"></script>
+  </body>
+</html>

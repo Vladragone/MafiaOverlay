@@ -1,0 +1,83 @@
+.log-editor {
+  display: grid;
+  grid-template-columns: minmax(330px, 1.25fr) repeat(2, minmax(220px, 1fr));
+  gap: 10px;
+}
+.log-block {
+  padding: 13px;
+  border: 1px solid #303030;
+  background: #121212;
+}
+.log-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.log-block-head strong {
+  font-size: 12px;
+}
+.log-block-head span {
+  color: #888;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.log-row {
+  display: grid;
+  grid-template-columns: 74px repeat(3, minmax(70px, 1fr));
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.log-row.single {
+  grid-template-columns: 74px 1fr;
+}
+.log-row label {
+  color: #858585;
+  font-size: 9px;
+}
+.log-row select {
+  height: 32px;
+  padding: 0 6px;
+  font-size: 10px;
+}
+.log-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
+}
+.log-score span {
+  color: #888;
+  font-size: 9px;
+}
+.log-score b {
+  min-width: 38px;
+  padding: 5px 7px;
+  text-align: center;
+  border-radius: 3px;
+  background: #ffdd2d;
+  color: #111;
+}
+.mini-add {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #3b3b3b;
+  border-radius: 4px;
+  background: #1b1b1b;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 800;
+}
+.players-title {
+  margin-top: 24px;
+}
+@media (max-width: 1300px) {
+  .log-editor {
+    grid-template-columns: 1fr;
+  }
+  .log-block {
+    min-width: 0;
+  }
+}
